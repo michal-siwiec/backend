@@ -20,7 +20,7 @@ This is developed using:
 3. Make sure that you have generated ssh keys with default path
 4. Run the following commands to start the application:
 ```bash
-SSH_PUB_KEY=$(cat ~/.ssh/id_rsa.pub) docker-compose build # Build images (perform only once)
+SSH_PUB_KEY=$(cat ~/.ssh/id_ed25519.pub) docker-compose build --no-cache # Build image (perform only once at the beggining)
 docker-compose up # App should be available on port 3333
 ```
 
