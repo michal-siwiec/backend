@@ -6,6 +6,7 @@ module Types
       module Mutations
         module Opinions
           class OpinionInput < Types::BaseInputObject
+            graphql_name 'OpinionMutationInput'
             argument :content, String, required: true
             argument :mark, Integer, required: true
             argument :user_id, ID, required: true

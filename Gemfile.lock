@@ -218,6 +218,9 @@ GEM
       net-protocol
     net-ssh (7.3.0)
     nio4r (2.7.4)
+    nokogiri (1.17.2)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
     nokogiri (1.17.2-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.17.2-x86_64-linux)
@@ -382,6 +385,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-23
+  ruby
   x86_64-linux
 
 DEPENDENCIES

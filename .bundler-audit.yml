@@ -1,0 +1,14 @@
+---
+ignore:
+  - GHSA-9j94-67jr-4cqj
+  - GHSA-47m2-26rw-j2jw
+  - GHSA-gjh7-p2fx-99vx
+  - GHSA-7wqh-767x-r66v
+  - GHSA-8cgq-6mh2-7j6v
+  - GHSA-7g2v-jj9q-g3rg
+  - GHSA-mrxw-mxhj-p664
+  - GHSA-5w6v-399v-w3cc
+  - GHSA-vvfq-8hwr-qm4m
+  - GHSA-j3g3-5qv5-52mj
+  - GHSA-7fc5-f82f-cx69
+  - GHSA-q92j-grw3-h492
