@@ -2,6 +2,8 @@ module Users
   class HandleRegisterUserService < BaseService
     extend Utils::CallableObject
 
+    RegistrationError = Class.new(Errors::CustomGraphqlError)
+
     def initialize(params:, session:)
       super()
       @params = params
@@ -20,6 +22,9 @@ module Users
 
     def create_user
       User.create!(@params.except(:avatars))
+    rescue ActiveRecord::RecordInvalid => e
+      raise RegistrationError.new(message: 'Email is already taken!', error_code: :EMAIL_ALREADY_TAKEN) if e.record.errors.any? { |err| err.attribute == :email && err.type == :taken }
+      raise e
     end
 
     def add_avatars(user:)
@@ -27,8 +32,7 @@ module Users
     end
 
     def send_registration_mail
-      UserMailer.with(email: @params.fetch(:email),
-                      password: @params.fetch(:password)).account_registered.deliver_later
+      UserMailer.with(email: @params.fetch(:email), password: @params.fetch(:password)).account_registered.deliver_later
     end
 
     def login_user(user:)
