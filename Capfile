@@ -17,3 +17,7 @@ require 'capistrano/sidekiq' # Make possible to use Sidekiq as system for async 
 
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined
 Dir.glob('lib/capistrano/tasks/*.rake').each { |r| import r }
+
+# TODO: Why do I need Procfile?
+# TODO: Add Cypress tests after changing logic here
+# TODO: Should I move Cypress tests to other repository?

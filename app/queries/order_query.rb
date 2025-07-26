@@ -8,9 +8,10 @@ class OrderQuery
 
   def call
     filter_by_membership_to_user_if_need
+    total_quantity = @orders.count
     paginate
     sort_by_creation_date
-    @orders
+    { orders: @orders, quantity: total_quantity }
   end
 
   private
