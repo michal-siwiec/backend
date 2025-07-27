@@ -7,9 +7,11 @@ module Queries
       type Types::Custom::Objects::Orders::OrderWithAllQuantityObject, null: false
 
       def resolve(params)
+        response = OrderQuery.new(params).call
+
         {
-          orders: OrderQuery.new(params).call,
-          all_orders_quantity: Order.count
+          orders: response[:orders],
+          all_orders_quantity: response[:quantity]
         }
       end
     end

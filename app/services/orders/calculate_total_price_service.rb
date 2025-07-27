@@ -10,7 +10,7 @@ module Orders
       products_price = calculate_products_price
       delivery_price = calculate_delivery_price
 
-      products_price + delivery_price
+      (products_price + delivery_price).round(2)
     end
 
     private
@@ -20,11 +20,11 @@ module Orders
     end
 
     def calculate_products_price
-      @order.products_orders.map { |product_order| product_order.product_quantity * product_order.product.price }.sum
+      @order.products_orders.map { |product_order| product_order.product_quantity * product_order.product.price }.sum.round(2)
     end
 
     def calculate_delivery_price
-      Order::DELIVERIES_DETAILS.find { |delivery_details| delivery_details.fetch(:method) == @order.delivery_method }.fetch(:price)
+      Order::DELIVERIES_DETAILS.find { |delivery_details| delivery_details.fetch(:method) == @order.delivery_method }.fetch(:price).round(2)
     end
   end
 end
