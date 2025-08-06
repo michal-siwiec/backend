@@ -9,7 +9,7 @@ services:
       dockerfile: Dockerfile
       args:
         SSH_PUB_KEY: ${SSH_PUB_KEY}
-    image: michsiw439/budoman-backend:3.0.0
+    image: michsiw439/budoman-backend:3.0.1
     container_name: budoman-backend-app
     ports:
       - 3333:3333
