@@ -1,17 +1,16 @@
 name: Test code quality
 on: push
-env:
-  DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
-  DATABASE_USER_NAME: ${{ secrets.DATABASE_USER_NAME }}
-  DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
 jobs:
-  code-quality:
+  core-validation:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         task: ['rubocop', 'rspec', 'bundler-audit update && bundler-audit check']
     env:
+      DATABASE_HOST: 127.0.0.1
+      DATABASE_USER_NAME: postgres
+      DATABASE_PASSWORD: postgres
       RAILS_ENV: test
     services:
       postgres:
@@ -21,7 +20,7 @@ jobs:
           POSTGRES_PORT: 5432
           POSTGRES_USER: ${{ env.DATABASE_USER_NAME }}
           POSTGRES_PASSWORD: ${{ env.DATABASE_PASSWORD }}
-          RAILS_ENV: test
+          RAILS_ENV: ${{ env.RAILS_ENV }}
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -43,3 +42,15 @@ jobs:
       if: matrix.task == 'rspec'
     - name: Run ${{ matrix.task }}
       run: bundle exec ${{ matrix.task }}
+  e2e-tests:
+    needs: core-validation
+    uses: kiwi439/budoman-system-tests/.github/workflows/shop_e2e_tests.yml@develop
+    with:
+      budoman-backend_branch: ${{ github.ref_name }}
+    secrets:
+      BUDOMAN_FRONTEND_AWS_ACCESS_KEY_ID: ${{ secrets.BUDOMAN_FRONTEND_AWS_ACCESS_KEY_ID }}
+      BUDOMAN_FRONTEND_AWS_SECRET_ACCESS_KEY: ${{ secrets.BUDOMAN_FRONTEND_AWS_SECRET_ACCESS_KEY }}
+      BUDOMAN_BACKEND_AWS_ACCESS_KEY_ID: ${{ secrets.BUDOMAN_BACKEND_AWS_ACCESS_KEY_ID }}
+      BUDOMAN_BACKEND_AWS_SECRET_ACCESS_KEY: ${{ secrets.BUDOMAN_BACKEND_AWS_SECRET_ACCESS_KEY }}
+      BUDOMAN_BACKEND_SIDEKIQ_PANEL_LOGIN: ${{ secrets.BUDOMAN_BACKEND_SIDEKIQ_PANEL_LOGIN }}
+      BUDOMAN_BACKEND_SIDEKIQ_PANEL_PASSWORD: ${{ secrets.BUDOMAN_BACKEND_SIDEKIQ_PANEL_PASSWORD }}

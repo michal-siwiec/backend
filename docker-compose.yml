@@ -9,13 +9,18 @@ services:
       dockerfile: Dockerfile
       args:
         SSH_PUB_KEY: ${SSH_PUB_KEY}
-    image: michsiw439/budoman-backend:3.0.1
+    image: michsiw439/budoman-backend:3.0.0
     container_name: budoman-backend-app
     ports:
       - 3333:3333
       - 2222:22
     env_file:
       - .env
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_USER_NAME: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_PORT: 5432
     networks:
       - budoman-backend
     volumes:
@@ -26,10 +31,11 @@ services:
     image: postgres:14
     container_name: budoman-backend-postgres
     ports:
-      - 5433:${DATABASE_PORT}
+      - 5433:5432
     environment:
-      - POSTGRES_USER=${DATABASE_USER_NAME}
-      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_HOST=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     networks:
       - budoman-backend
   redis:

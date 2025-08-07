@@ -3,7 +3,7 @@ module Services
     class S3Service
       def initialize(bucket: Rails.configuration.aws_bucket)
         @bucket = bucket
-        @client = ::Aws::S3::Client.new({ region: ENV.fetch('AWS_REGION'),
+        @client = ::Aws::S3::Client.new({ region: Rails.application.config.aws_region,
                                           credentials: ::Aws::Credentials.new(ENV.fetch('AWS_ACCESS_KEY_ID'), ENV.fetch('AWS_SECRET_ACCESS_KEY')) })
       end
 
