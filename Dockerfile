@@ -1,4 +1,4 @@
-FROM ruby:3.1.1-bullseye
+FROM ruby:3.1.1
 
 # SETUP BUILD ARGUMENTS
 ARG SSH_PUB_KEY

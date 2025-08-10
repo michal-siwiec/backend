@@ -10,7 +10,7 @@ module Services
         @invocation_type = invocation_type
         @log_type = log_type
         @payload = payload
-        @client = ::Aws::Lambda::Client.new({ region: ENV.fetch('AWS_REGION'),
+        @client = ::Aws::Lambda::Client.new({ region: Rails.application.config.aws_region,
                                               credentials: ::Aws::Credentials.new(ENV.fetch('AWS_ACCESS_KEY_ID'), ENV.fetch('AWS_SECRET_ACCESS_KEY')) })
       end
 

@@ -19,10 +19,12 @@ Bundler.require(*Rails.groups)
 module OlxBackend
   class Application < Rails::Application
     config.load_defaults 7.1
+
     # For authorization
     config.api_only = true
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
+
     # For mailers
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.raise_delivery_errors = true
@@ -34,13 +36,22 @@ module OlxBackend
       domain: 'mail.google.com',
       user_name: 'siwiec.michal724@gmail.com',
       password: ENV['SMTP_PASSWORD'],
-      authentication: ENV['SMTP_AUTHENTICATION'],
+      authentication: 'plain',
       enable_starttls_auto: true,
     }
+
     # For async jobs
+    config.redis_url = 'redis://redis:6379/0'
     config.active_job.queue_adapter = :sidekiq
-    config.cache_store = :redis_cache_store, { url: ENV['REDIS_URL'] }
+    config.cache_store = :redis_cache_store, { url: config.redis_url }
+
     # To use code from /lib directory
     config.autoload_lib(ignore: %w[tasks])
+
+    # AWS config
+    config.aws_region = 'eu-central-1'
+
+    # Stream platform
+    config.schema_registry_url = 'http://schema-registry:8081'
   end
 end
