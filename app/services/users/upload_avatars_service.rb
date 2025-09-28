@@ -2,24 +2,26 @@ module Users
   class UploadAvatarsService
     extend Utils::CallableObject
 
-    def initialize(user_id:, avatars:)
-      super()
-      @user_id = user_id
+    AvatarValidationError = Class.new(Errors::CustomGraphqlError)
+
+    def initialize(avatars:, user_id:)
       @avatars = avatars
-      @uploaded_avatars_details = []
+      @user_id = user_id
     end
 
     def call
+      avatars_details = [];
+
       @avatars.each do |avatar|
         payload = build_avatar_payload(avatar: avatar)
         is_avatar_valid = validate_avatar(avatar_as_base64: payload[:base64])
-        next unless is_avatar_valid
+        raise AvatarValidationError.new(message: "Avatar: #{avatar[:file_name]} is not valid! Has to present real face", error_code: :AVATAR_NOT_VALID) unless is_avatar_valid
 
         upload_avatar_to_storage(payload: payload)
-        save_avatar_details(payload: payload)
+        avatars_details << payload.fetch(:details)
       end
 
-      @uploaded_avatars_details
+      avatars_details
     end
 
     private
@@ -34,10 +36,6 @@ module Users
 
     def upload_avatar_to_storage(payload:)
       ::Services::Aws::S3Service.new.put_object(body: payload.fetch(:base64), key: payload.fetch(:path))
-    end
-
-    def save_avatar_details(payload:)
-      @uploaded_avatars_details << payload.fetch(:details)
     end
   end
 end
