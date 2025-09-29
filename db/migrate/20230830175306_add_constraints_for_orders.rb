@@ -1,4 +1,4 @@
-# rubocop:disable Metrics/MethodLength, Metrics/ClassLength, Metrics/AbcSize
+# rubocop:disable Metrics/MethodLength, Metrics/ClassLength
 class AddConstraintsForOrders < ActiveRecord::Migration[5.2]
   def up
     change_column_null :orders, :name, false
@@ -126,4 +126,4 @@ class AddConstraintsForOrders < ActiveRecord::Migration[5.2]
     SQL
   end
 end
-# rubocop:enable Metrics/MethodLength, Metrics/ClassLength, Metrics/AbcSize
+# rubocop:enable Metrics/MethodLength, Metrics/ClassLength
