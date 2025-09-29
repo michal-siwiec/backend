@@ -7,7 +7,7 @@ module Mutations
       type Types::Custom::Objects::Users::UserObject
 
       def resolve(params)
-        ::Users::HandleRemoveUserService.call(user_id: params.fetch(:user_id), session: context.fetch(:session))
+        ::Users::RemoveUserService.call(user_id: params.fetch(:user_id), session: context.fetch(:session))
       end
     end
   end
