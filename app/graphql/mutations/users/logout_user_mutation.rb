@@ -8,7 +8,8 @@ module Mutations
 
       def resolve(params)
         super(params)
-        ::Users::HandleLogoutUserService.call(params: @params, session: context.fetch(:session))
+        @session[:user_token] = nil
+        User.find_by(@params)
       end
     end
   end

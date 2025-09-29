@@ -1,5 +1,7 @@
 module Users
-  class HandleLoginUserService < BaseService
+  class LoginUserService < BaseService
+    extend Utils::CallableObject
+
     AuthenticationError = Class.new(Errors::CustomGraphqlError)
 
     def initialize(params:, session:)
