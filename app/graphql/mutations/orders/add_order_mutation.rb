@@ -8,7 +8,7 @@ module Mutations
 
       def resolve(params)
         super(params)
-        ::Orders::HandleAddOrderService.call(params: @params)
+        ::Orders::CreateOrderService.call(params: @params)
       end
     end
   end

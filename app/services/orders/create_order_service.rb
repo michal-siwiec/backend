@@ -1,13 +1,22 @@
 module Orders
-  class AddOrderService
+  class CreateOrderService
     extend Utils::CallableObject
 
-    def initialize(order_params:, order_products_params:)
-      @order_params = order_params
-      @order_products_params = order_products_params
+    def initialize(params:)
+      @order_params = params.except(:products_order)
+      @order_products_params = params.fetch(:products_order)
     end
 
     def call
+      order = create_order
+      upload_invoice_to_storage(order: order)
+      send_order_created_email(order: order)
+      order
+    end
+
+    private
+
+    def create_order
       ActiveRecord::Base.transaction do
         order = Order.new(@order_params)
         add_products_to_order(order: order)
@@ -16,8 +25,6 @@ module Orders
         order
       end
     end
-
-    private
 
     def add_products_to_order(order:)
       @order_products_params.each { |params| order.products_orders << ProductsOrder.new(params) }
@@ -31,6 +38,14 @@ module Orders
 
         product.update!(available_quantity: actual_quantity)
       end
+    end
+
+    def upload_invoice_to_storage(order:)
+      ::Invoices::UploadOnStorageService.call(order: order)
+    end
+
+    def send_order_created_email(order:)
+      OrderMailer.with(order: order).order_created.deliver_later(queue: :order)
     end
   end
 end
