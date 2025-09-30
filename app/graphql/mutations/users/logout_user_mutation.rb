@@ -8,7 +8,7 @@ module Mutations
 
       def resolve(params)
         super(params)
-        @session[:user_token] = nil
+        context.fetch(:session)[:user_token] = nil
         User.find_by(@params)
       end
     end
