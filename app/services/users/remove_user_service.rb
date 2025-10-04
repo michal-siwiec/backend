@@ -1,5 +1,5 @@
 module Users
-  class RemoveUserService < BaseService
+  class RemoveUserService
     extend Utils::CallableObject
 
     def initialize(user_id:, session:)

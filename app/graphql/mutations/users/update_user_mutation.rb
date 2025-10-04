@@ -8,7 +8,10 @@ module Mutations
 
       def resolve(params)
         super(params)
-        ::Users::UpdateUserService.call(params: @params)
+
+        user = User.find(@params.fetch(:user_id))
+        user.update!(@params.except(:user_id))
+        user
       end
     end
   end
