@@ -36,7 +36,7 @@ module Users
       end
 
       def process_avatars(user)
-        ::Users::Registration::UploadAvatarsService.call(avatars: @params[:avatars], user_id: user.id)
+        ::Users::Registration::ProcessAvatarsService.call(avatars: @params[:avatars], user_id: user.id)
       end
 
       def send_registration_mail

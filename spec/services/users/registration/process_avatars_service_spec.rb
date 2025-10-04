@@ -1,4 +1,4 @@
-describe Users::Registration::UploadAvatarsService, type: :service do
+describe Users::Registration::ProcessAvatarsService, type: :service do
   describe '#call' do
     subject { described_class.call(user_id: user_id, avatars: avatars) }
 
@@ -24,7 +24,7 @@ describe Users::Registration::UploadAvatarsService, type: :service do
           details: { main: 'true', bucket: 'budoman-development', key: 'users/71f02bc6-1827-4650-851b-00e105c180de/avatars/avatar1.jpg' }
         },
         {
-          base64: 'decoded_base64_2', 
+          base64: 'decoded_base64_2',
           path: 'users/71f02bc6-1827-4650-851b-00e105c180de/avatars/avatar2.jpg',
           details: { main: 'false', bucket: 'budoman-development', key: 'users/71f02bc6-1827-4650-851b-00e105c180de/avatars/avatar2.jpg' }
         }
@@ -80,7 +80,7 @@ describe Users::Registration::UploadAvatarsService, type: :service do
       end
 
       it 'raises AvatarValidationError for invalid avatar' do
-        expect { subject }.to raise_error(Users::Registration::UploadAvatarsService::AvatarValidationError) do |error|
+        expect { subject }.to raise_error(Users::Registration::ProcessAvatarsService::AvatarValidationError) do |error|
           expect(error.message).to eq('Avatar: avatar2.jpg is not valid! Has to present real face')
           expect(error.error_code).to eq(:AVATAR_NOT_VALID)
         end
@@ -88,7 +88,7 @@ describe Users::Registration::UploadAvatarsService, type: :service do
 
       it 'does not upload invalid avatar to storage' do
         expect(s3_service).to receive(:put_object).once
-        expect { subject }.to raise_error(Users::Registration::UploadAvatarsService::AvatarValidationError)
+        expect { subject }.to raise_error(Users::Registration::ProcessAvatarsService::AvatarValidationError)
       end
     end
 
@@ -98,7 +98,7 @@ describe Users::Registration::UploadAvatarsService, type: :service do
       end
 
       it 'raises AvatarValidationError for first invalid avatar' do
-        expect { subject }.to raise_error(Users::Registration::UploadAvatarsService::AvatarValidationError) do |error|
+        expect { subject }.to raise_error(Users::Registration::ProcessAvatarsService::AvatarValidationError) do |error|
           expect(error.message).to eq('Avatar: avatar1.jpg is not valid! Has to present real face')
           expect(error.error_code).to eq(:AVATAR_NOT_VALID)
         end
@@ -106,7 +106,7 @@ describe Users::Registration::UploadAvatarsService, type: :service do
 
       it 'does not upload any avatars to storage' do
         expect(s3_service).not_to receive(:put_object)
-        expect { subject }.to raise_error(Users::Registration::UploadAvatarsService::AvatarValidationError)
+        expect { subject }.to raise_error(Users::Registration::ProcessAvatarsService::AvatarValidationError)
       end
     end
   end

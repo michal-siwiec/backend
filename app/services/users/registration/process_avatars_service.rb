@@ -1,6 +1,6 @@
 module Users
   module Registration
-    class UploadAvatarsService
+    class ProcessAvatarsService
       extend Utils::CallableObject
 
       AvatarValidationError = Class.new(Errors::CustomGraphqlError)
@@ -11,7 +11,7 @@ module Users
       end
 
       def call
-        avatars_details = [];
+        avatars_details = []
 
         @avatars.each do |avatar|
           payload = build_avatar_payload(avatar: avatar)

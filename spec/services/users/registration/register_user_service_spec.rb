@@ -68,7 +68,7 @@ describe Users::Registration::RegisterUserService, type: :service do
         end
 
         before do
-          allow(Users::Registration::UploadAvatarsService).to receive(:call).and_return(avatars_details)
+          allow(Users::Registration::ProcessAvatarsService).to receive(:call).and_return(avatars_details)
         end
 
         it 'creates user with avatars' do
@@ -82,8 +82,8 @@ describe Users::Registration::RegisterUserService, type: :service do
           expect(user.avatars).to eq(avatars_details)
         end
 
-        it 'calls UploadAvatarsService with correct parameters' do
-          expect(Users::Registration::UploadAvatarsService).to receive(:call).with(avatars: params[:avatars], user_id: kind_of(String))
+        it 'calls ProcessAvatarsService with correct parameters' do
+          expect(Users::Registration::ProcessAvatarsService).to receive(:call).with(avatars: params[:avatars], user_id: kind_of(String))
 
           subject
         end
@@ -144,14 +144,14 @@ describe Users::Registration::RegisterUserService, type: :service do
         end
 
         before do
-          allow(Users::Registration::UploadAvatarsService).to receive(:call).and_raise(Users::Registration::UploadAvatarsService::AvatarValidationError.new(
+          allow(Users::Registration::ProcessAvatarsService).to receive(:call).and_raise(Users::Registration::ProcessAvatarsService::AvatarValidationError.new(
             message: 'Avatar is not valid!',
             error_code: :AVATAR_NOT_VALID
           ))
         end
 
         it 'raises AvatarValidationError' do
-          expect { subject }.to raise_error(Users::Registration::UploadAvatarsService::AvatarValidationError) do |error|
+          expect { subject }.to raise_error(Users::Registration::ProcessAvatarsService::AvatarValidationError) do |error|
             expect(error.message).to eq('Avatar is not valid!')
             expect(error.error_code).to eq(:AVATAR_NOT_VALID)
           end
