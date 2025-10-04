@@ -8,7 +8,7 @@ module Mutations
 
       def resolve(params)
         super(params)
-        ::Newsletters::SubscribeToNewsletterService.call(params: @params)
+        ::Newsletter.create!(email: @params.fetch(:email), name: @params.fetch(:name), surname: @params.fetch(:surname))
       end
     end
   end
