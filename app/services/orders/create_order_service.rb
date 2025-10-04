@@ -41,7 +41,7 @@ module Orders
     end
 
     def upload_invoice_to_storage(order:)
-      ::Invoices::UploadOnStorageService.call(order: order)
+      ::Orders::UploadInvoiceToStorageService.call(order: order)
     end
 
     def send_order_created_email(order:)

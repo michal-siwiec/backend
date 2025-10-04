@@ -31,7 +31,7 @@ describe Orders::CreateOrderService, type: :service do
     let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
 
     before do
-      allow(Invoices::UploadOnStorageService).to receive(:call).and_return(true)
+      allow(Orders::UploadInvoiceToStorageService).to receive(:call).and_return(true)
       allow(OrderMailer).to receive(:with).and_return(OrderMailer)
       allow(OrderMailer).to receive(:order_created).and_return(message_delivery)
       allow(message_delivery).to receive(:deliver_later).and_return(true)
@@ -51,7 +51,7 @@ describe Orders::CreateOrderService, type: :service do
       end
 
       it 'uploads invoice to storage' do
-        expect(Invoices::UploadOnStorageService).to receive(:call).with(order: instance_of(Order))
+        expect(Orders::UploadInvoiceToStorageService).to receive(:call).with(order: instance_of(Order))
         subject
       end
 
@@ -98,7 +98,7 @@ describe Orders::CreateOrderService, type: :service do
       end
 
       it 'does not upload invoice' do
-        expect(Invoices::UploadOnStorageService).not_to receive(:call)
+        expect(Orders::UploadInvoiceToStorageService).not_to receive(:call)
         subject rescue nil
       end
 
@@ -109,7 +109,7 @@ describe Orders::CreateOrderService, type: :service do
     end
 
     context 'when upload service fails' do
-      before { allow(Invoices::UploadOnStorageService).to receive(:call).and_raise(StandardError, 'Upload failed') }
+      before { allow(Orders::UploadInvoiceToStorageService).to receive(:call).and_raise(StandardError, 'Upload failed') }
 
       it 'raises error' do
         expect { subject }.to raise_error(StandardError, 'Upload failed')
