@@ -7,10 +7,10 @@ describe Users::LoginUserService, type: :service do
     let(:params) { { email: 'test@example.com', password: 'password123' } }
     let(:user) { create(:user, email: params[:email], password: params[:password]) }
     let(:session) { instance_double('Session') }
-    let(:session_user_service) { instance_double(Users::SessionUserService) }
+    let(:session_user_service) { instance_double(Session::UserSessionService) }
 
     before do
-      allow(Users::SessionUserService).to receive(:new).and_return(session_user_service)
+      allow(Session::UserSessionService).to receive(:new).and_return(session_user_service)
       allow(session_user_service).to receive(:login).and_return(true)
     end
 
@@ -18,7 +18,7 @@ describe Users::LoginUserService, type: :service do
       before { user }
 
       it 'logs in the user' do
-        expect(Users::SessionUserService).to receive(:new).with(user: user, session: session)
+        expect(Session::UserSessionService).to receive(:new).with(user: user, session: session)
         expect(session_user_service).to receive(:login)
         subject
       end
@@ -37,7 +37,7 @@ describe Users::LoginUserService, type: :service do
       end
 
       it 'does not call SessionUserService' do
-        expect(Users::SessionUserService).not_to receive(:new)
+        expect(Session::UserSessionService).not_to receive(:new)
         expect { subject }.to raise_error(Users::LoginUserService::AuthenticationError)
       end
     end
@@ -56,7 +56,7 @@ describe Users::LoginUserService, type: :service do
       end
 
       it 'does not call SessionUserService' do
-        expect(Users::SessionUserService).not_to receive(:new)
+        expect(Session::UserSessionService).not_to receive(:new)
         expect { subject }.to raise_error(Users::LoginUserService::AuthenticationError)
       end
     end

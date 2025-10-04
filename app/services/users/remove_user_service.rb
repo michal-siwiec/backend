@@ -33,7 +33,7 @@ module Users
     end
 
     def destroy_user_session
-      @session.destroy
+      ::Session::UserSessionService.new(session: @session).destroy
     end
 
     def destroy_user

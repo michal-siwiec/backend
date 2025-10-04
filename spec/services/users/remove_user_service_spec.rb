@@ -5,13 +5,16 @@ describe Users::RemoveUserService, type: :service do
     subject { described_class.call(user_id: user.id, session: session) }
 
     let(:user) { create(:user, email: 'test@example.com') }
-    let(:session) { instance_double('Session') }
+    let(:session) { {} }
     let(:s3_service) { instance_double(Services::Aws::S3Service) }
+    let(:session_service) { instance_double(Session::UserSessionService) }
 
     before do
       allow(Services::Aws::S3Service).to receive(:new).and_return(s3_service)
       allow(s3_service).to receive(:delete_object)
-      allow(session).to receive(:destroy)
+      allow(s3_service).to receive(:list_objects).and_return(OpenStruct.new(contents: []))
+      allow(Session::UserSessionService).to receive(:new).and_return(session_service)
+      allow(session_service).to receive(:destroy)
     end
 
     context 'when user removal is successful' do
@@ -50,7 +53,7 @@ describe Users::RemoveUserService, type: :service do
       end
 
       it 'destroys user session' do
-        expect(session).to receive(:destroy)
+        expect(session_service).to receive(:destroy)
         subject
       end
 

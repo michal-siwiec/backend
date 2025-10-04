@@ -40,7 +40,7 @@ module Graphql
     end
 
     def current_user
-      ::Users::SessionUserService.new(session: @session).current_user
+      ::Session::UserSessionService.new(session: @session).current_user
     end
   end
 end

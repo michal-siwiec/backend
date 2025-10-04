@@ -13,12 +13,12 @@ describe Users::Registration::RegisterUserService, type: :service do
     end
     let(:session) { {} }
     let(:user) { instance_double(User) }
-    let(:session_user_service) { instance_double(Users::SessionUserService) }
+    let(:session_user_service) { instance_double(Session::UserSessionService) }
     let(:mailer_instance) { instance_double(UserMailer) }
     let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
 
     before do
-      allow(Users::SessionUserService).to receive(:new).and_return(session_user_service)
+      allow(Session::UserSessionService).to receive(:new).and_return(session_user_service)
       allow(session_user_service).to receive(:login)
       allow(UserMailer).to receive(:with).and_return(mailer_instance)
       allow(mailer_instance).to receive(:account_registered).and_return(message_delivery)
@@ -47,7 +47,7 @@ describe Users::Registration::RegisterUserService, type: :service do
         end
 
         it 'logs in the user' do
-          expect(Users::SessionUserService).to receive(:new).with(user: kind_of(User), session: session)
+          expect(Session::UserSessionService).to receive(:new).with(user: kind_of(User), session: session)
           expect(session_user_service).to receive(:login)
 
           subject
@@ -111,7 +111,7 @@ describe Users::Registration::RegisterUserService, type: :service do
         end
 
         it 'does not login user' do
-          expect(Users::SessionUserService).not_to receive(:new)
+          expect(Session::UserSessionService).not_to receive(:new)
           expect { subject }.to raise_error(Users::Registration::RegisterUserService::RegistrationError)
         end
       end

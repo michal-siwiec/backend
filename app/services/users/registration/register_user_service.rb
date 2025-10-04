@@ -44,7 +44,7 @@ module Users
       end
 
       def login_user(user)
-        ::Users::SessionUserService.new(user: user, session: @session).login
+        ::Session::UserSessionService.new(user: user, session: @session).login
       end
     end
   end

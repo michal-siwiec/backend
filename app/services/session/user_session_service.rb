@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-module Users
-  class SessionUserService
+module Session
+  class UserSessionService
     JWT_PASSWORD = nil
     JWT_SIGNING = 'none'
     JWT_VALIDATION = false
 
     def initialize(session:, user: nil)
-      @user = user
       @session = session
+      @user = user
     end
 
     def login
