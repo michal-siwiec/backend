@@ -1,4 +1,4 @@
-describe Users::UploadAvatarsService, type: :service do
+describe Users::Registration::UploadAvatarsService, type: :service do
   describe '#call' do
     subject { described_class.call(user_id: user_id, avatars: avatars) }
 
@@ -11,13 +11,13 @@ describe Users::UploadAvatarsService, type: :service do
     end
 
     let(:s3_service) { instance_double(Services::Aws::S3Service) }
-    let(:build_avatar_payload_service) { instance_double(Users::BuildAvatarPayloadService) }
-    let(:validate_avatar_service) { instance_double(Users::ValidateAvatarService) }
+    let(:build_avatar_payload_service) { instance_double(Users::Registration::BuildAvatarPayloadService) }
+    let(:validate_avatar_service) { instance_double(Users::Registration::ValidateAvatarService) }
 
     before do
       allow(Services::Aws::S3Service).to receive(:new).and_return(s3_service)
       allow(s3_service).to receive(:put_object)
-      allow(Users::BuildAvatarPayloadService).to receive(:call).and_return(
+      allow(Users::Registration::BuildAvatarPayloadService).to receive(:call).and_return(
         {
           base64: 'decoded_base64_1',
           path: 'users/71f02bc6-1827-4650-851b-00e105c180de/avatars/avatar1.jpg',
@@ -29,20 +29,20 @@ describe Users::UploadAvatarsService, type: :service do
           details: { main: 'false', bucket: 'budoman-development', key: 'users/71f02bc6-1827-4650-851b-00e105c180de/avatars/avatar2.jpg' }
         }
       )
-      allow(Users::ValidateAvatarService).to receive(:call).and_return(true, true)
+      allow(Users::Registration::ValidateAvatarService).to receive(:call).and_return(true, true)
     end
 
     context 'when all avatars are valid' do
       it 'calls BuildAvatarPayloadService for each avatar' do
-        expect(Users::BuildAvatarPayloadService).to receive(:call).with(user_id: user_id, avatar: avatars[0])
-        expect(Users::BuildAvatarPayloadService).to receive(:call).with(user_id: user_id, avatar: avatars[1])
+        expect(Users::Registration::BuildAvatarPayloadService).to receive(:call).with(user_id: user_id, avatar: avatars[0])
+        expect(Users::Registration::BuildAvatarPayloadService).to receive(:call).with(user_id: user_id, avatar: avatars[1])
 
         subject
       end
 
       it 'validates each avatar' do
-        expect(Users::ValidateAvatarService).to receive(:call).with(avatar_as_base64: 'decoded_base64_1')
-        expect(Users::ValidateAvatarService).to receive(:call).with(avatar_as_base64: 'decoded_base64_2')
+        expect(Users::Registration::ValidateAvatarService).to receive(:call).with(avatar_as_base64: 'decoded_base64_1')
+        expect(Users::Registration::ValidateAvatarService).to receive(:call).with(avatar_as_base64: 'decoded_base64_2')
 
         subject
       end
@@ -63,11 +63,11 @@ describe Users::UploadAvatarsService, type: :service do
       end
 
       it 'processes avatars in correct order' do
-        expect(Users::BuildAvatarPayloadService).to receive(:call).ordered
-        expect(Users::ValidateAvatarService).to receive(:call).ordered
+        expect(Users::Registration::BuildAvatarPayloadService).to receive(:call).ordered
+        expect(Users::Registration::ValidateAvatarService).to receive(:call).ordered
         expect(s3_service).to receive(:put_object).ordered
-        expect(Users::BuildAvatarPayloadService).to receive(:call).ordered
-        expect(Users::ValidateAvatarService).to receive(:call).ordered
+        expect(Users::Registration::BuildAvatarPayloadService).to receive(:call).ordered
+        expect(Users::Registration::ValidateAvatarService).to receive(:call).ordered
         expect(s3_service).to receive(:put_object).ordered
 
         subject
@@ -76,11 +76,11 @@ describe Users::UploadAvatarsService, type: :service do
 
     context 'when some avatars are invalid' do
       before do
-        allow(Users::ValidateAvatarService).to receive(:call).and_return(true, false)
+        allow(Users::Registration::ValidateAvatarService).to receive(:call).and_return(true, false)
       end
 
       it 'raises AvatarValidationError for invalid avatar' do
-        expect { subject }.to raise_error(Users::UploadAvatarsService::AvatarValidationError) do |error|
+        expect { subject }.to raise_error(Users::Registration::UploadAvatarsService::AvatarValidationError) do |error|
           expect(error.message).to eq('Avatar: avatar2.jpg is not valid! Has to present real face')
           expect(error.error_code).to eq(:AVATAR_NOT_VALID)
         end
@@ -88,17 +88,17 @@ describe Users::UploadAvatarsService, type: :service do
 
       it 'does not upload invalid avatar to storage' do
         expect(s3_service).to receive(:put_object).once
-        expect { subject }.to raise_error(Users::UploadAvatarsService::AvatarValidationError)
+        expect { subject }.to raise_error(Users::Registration::UploadAvatarsService::AvatarValidationError)
       end
     end
 
     context 'when all avatars are invalid' do
       before do
-        allow(Users::ValidateAvatarService).to receive(:call).and_return(false, false)
+        allow(Users::Registration::ValidateAvatarService).to receive(:call).and_return(false, false)
       end
 
       it 'raises AvatarValidationError for first invalid avatar' do
-        expect { subject }.to raise_error(Users::UploadAvatarsService::AvatarValidationError) do |error|
+        expect { subject }.to raise_error(Users::Registration::UploadAvatarsService::AvatarValidationError) do |error|
           expect(error.message).to eq('Avatar: avatar1.jpg is not valid! Has to present real face')
           expect(error.error_code).to eq(:AVATAR_NOT_VALID)
         end
@@ -106,7 +106,7 @@ describe Users::UploadAvatarsService, type: :service do
 
       it 'does not upload any avatars to storage' do
         expect(s3_service).not_to receive(:put_object)
-        expect { subject }.to raise_error(Users::UploadAvatarsService::AvatarValidationError)
+        expect { subject }.to raise_error(Users::Registration::UploadAvatarsService::AvatarValidationError)
       end
     end
   end

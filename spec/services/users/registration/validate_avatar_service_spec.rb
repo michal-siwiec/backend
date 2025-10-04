@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::ValidateAvatarService, type: :service do
+describe Users::Registration::ValidateAvatarService, type: :service do
   describe '#call' do
     subject { described_class.call(avatar_as_base64: avatar_as_base64) }
 

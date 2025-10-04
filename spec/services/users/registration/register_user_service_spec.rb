@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::RegisterUserService, type: :service do
+describe Users::Registration::RegisterUserService, type: :service do
   describe '#call' do
     subject { described_class.call(params: params, session: session) }
 
@@ -68,7 +68,7 @@ describe Users::RegisterUserService, type: :service do
         end
 
         before do
-          allow(Users::UploadAvatarsService).to receive(:call).and_return(avatars_details)
+          allow(Users::Registration::UploadAvatarsService).to receive(:call).and_return(avatars_details)
         end
 
         it 'creates user with avatars' do
@@ -83,7 +83,7 @@ describe Users::RegisterUserService, type: :service do
         end
 
         it 'calls UploadAvatarsService with correct parameters' do
-          expect(Users::UploadAvatarsService).to receive(:call).with(avatars: params[:avatars], user_id: kind_of(String))
+          expect(Users::Registration::UploadAvatarsService).to receive(:call).with(avatars: params[:avatars], user_id: kind_of(String))
 
           subject
         end
@@ -95,7 +95,7 @@ describe Users::RegisterUserService, type: :service do
         before { create(:user, email: params[:email]) }
 
         it 'raises RegistrationError with EMAIL_ALREADY_TAKEN' do
-          expect { subject }.to raise_error(Users::RegisterUserService::RegistrationError) do |error|
+          expect { subject }.to raise_error(Users::Registration::RegisterUserService::RegistrationError) do |error|
             expect(error.message).to eq('Email is already taken!')
             expect(error.error_code).to eq(:EMAIL_ALREADY_TAKEN)
           end
@@ -107,12 +107,12 @@ describe Users::RegisterUserService, type: :service do
 
         it 'does not send email' do
           expect(UserMailer).not_to receive(:with)
-          expect { subject }.to raise_error(Users::RegisterUserService::RegistrationError)
+          expect { subject }.to raise_error(Users::Registration::RegisterUserService::RegistrationError)
         end
 
         it 'does not login user' do
           expect(Users::SessionUserService).not_to receive(:new)
-          expect { subject }.to raise_error(Users::RegisterUserService::RegistrationError)
+          expect { subject }.to raise_error(Users::Registration::RegisterUserService::RegistrationError)
         end
       end
 
@@ -144,14 +144,14 @@ describe Users::RegisterUserService, type: :service do
         end
 
         before do
-          allow(Users::UploadAvatarsService).to receive(:call).and_raise(Users::UploadAvatarsService::AvatarValidationError.new(
+          allow(Users::Registration::UploadAvatarsService).to receive(:call).and_raise(Users::Registration::UploadAvatarsService::AvatarValidationError.new(
             message: 'Avatar is not valid!',
             error_code: :AVATAR_NOT_VALID
           ))
         end
 
         it 'raises AvatarValidationError' do
-          expect { subject }.to raise_error(Users::UploadAvatarsService::AvatarValidationError) do |error|
+          expect { subject }.to raise_error(Users::Registration::UploadAvatarsService::AvatarValidationError) do |error|
             expect(error.message).to eq('Avatar is not valid!')
             expect(error.error_code).to eq(:AVATAR_NOT_VALID)
           end

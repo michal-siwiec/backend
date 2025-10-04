@@ -8,7 +8,7 @@ module Mutations
 
       def resolve(params)
         super(params)
-        ::Users::RegisterUserService.call(params: @params, session: context.fetch(:session))
+        ::Users::Registration::RegisterUserService.call(params: @params, session: context.fetch(:session))
       end
     end
   end

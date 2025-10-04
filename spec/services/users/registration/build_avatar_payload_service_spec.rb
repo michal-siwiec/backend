@@ -1,4 +1,4 @@
-describe Users::BuildAvatarPayloadService, type: :builder do
+describe Users::Registration::BuildAvatarPayloadService, type: :builder do
   describe  '#build' do
     subject { described_class.call(user_id: user.id, avatar: avatar) }
 
