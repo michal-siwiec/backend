@@ -1,5 +1,7 @@
 module Newsletters
-  class SubscribeToNewsletterService < BaseService
+  class SubscribeToNewsletterService
+    extend Utils::CallableObject
+
     def initialize(params:)
       super()
       @params = params

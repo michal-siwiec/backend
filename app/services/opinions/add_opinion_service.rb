@@ -1,5 +1,7 @@
 module Opinions
-  class AddOpinionService < BaseService
+  class AddOpinionService
+    extend Utils::CallableObject
+
     def initialize(params:)
       super()
       @params = params

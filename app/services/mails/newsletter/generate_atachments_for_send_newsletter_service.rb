@@ -1,6 +1,8 @@
 module Mails
   module Newsletter
-    class GenerateAtachmentsForSendNewsletterService < BaseService
+    class GenerateAtachmentsForSendNewsletterService
+      extend Utils::CallableObject
+
       def call
         attachments = []
         attachments << { file_name: 'Prezentacja budowlana.pptx', content: construction_presentation }

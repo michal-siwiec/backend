@@ -1,6 +1,6 @@
 module Users
   module Registration
-    class RegisterUserService < BaseService
+    class RegisterUserService
       extend Utils::CallableObject
 
       RegistrationError = Class.new(Errors::CustomGraphqlError)

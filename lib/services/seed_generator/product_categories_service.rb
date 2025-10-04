@@ -2,7 +2,7 @@
 
 module Services
   module SeedGenerator
-    class ProductCategoriesService < BaseService
+    class ProductCategoriesService
       private
 
       SHEET_NAME = 'ProductsCategories'

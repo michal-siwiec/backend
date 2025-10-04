@@ -1,5 +1,5 @@
 module Users
-  class LoginUserService < BaseService
+  class LoginUserService
     extend Utils::CallableObject
 
     AuthenticationError = Class.new(Errors::CustomGraphqlError)

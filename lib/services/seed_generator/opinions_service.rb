@@ -2,7 +2,7 @@
 
 module Services
   module SeedGenerator
-    class OpinionsService < BaseService
+    class OpinionsService
       private
 
       SHEET_NAME = 'Opinions'
