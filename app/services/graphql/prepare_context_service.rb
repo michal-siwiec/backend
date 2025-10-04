@@ -31,7 +31,7 @@ module Graphql
       when Hash
         variables_to_process
       when ActionController::Parameters
-        variables_to_process.to_unsafe_hash # GraphQL-Ruby will validate name and type of incoming variables.
+        variables_to_process.to_unsafe_hash
       when nil
         {}
       else

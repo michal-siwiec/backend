@@ -3,7 +3,6 @@ module Users
     extend Utils::CallableObject
 
     def initialize(user_id:, session:)
-      super()
       @user = User.find(user_id)
       @session = session
     end

@@ -5,7 +5,6 @@ module Users
     AuthenticationError = Class.new(Errors::CustomGraphqlError)
 
     def initialize(params:, session:)
-      super()
       @params = params
       @session = session
     end

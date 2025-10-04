@@ -4,7 +4,6 @@ module Mails
       extend Utils::CallableObject
 
       def initialize(order:)
-        super()
         @order = order
       end
 
